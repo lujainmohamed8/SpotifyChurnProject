@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Churn Prediction - Project Proposal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --spotify-green: #1DB954;
+            --spotify-black: #121212;
+            --spotify-dark-grey: #181818;
+            --spotify-light-grey: #282828;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B3B3B3;
+            --shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--spotify-black);
+            overflow-x: hidden;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(29, 185, 84, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(29, 185, 84, 0); }
+        }
+
+        /* --- Layout --- */
+        .container {
+            width: 100%;
+            margin: 0;
+            position: relative;
+        }
+
+        /* --- Cover Page --- */
+        .cover-page {
+            background: linear-gradient(180deg, rgba(29,185,84,0.15) 0%, rgba(18,18,18,1) 100%);
+            padding: 100px 40px 60px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+            position: relative;
+        }
+
+        /* Institution Header */
+        .institution-header {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 13px;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .institution-header span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .institution-header strong {
+            color: white;
+            font-weight: 700;
+        }
+
+        /* Logo & Titles */
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            background: var(--spotify-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            font-size: 50px;
+            color: white;
+            animation: pulse 2s infinite;
+            margin-top: 40px;
+        }
+
+        .cover-page h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .cover-page .subtitle {
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* CTA Button Style */
+        .cta-button {
+            display: inline-block;
+            background-color: var(--spotify-green);
+            color: var(--spotify-black);
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        .cta-button:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.6);
+        }
+
+        .cta-button i {
+            margin-right: 8px;
+        }
+
+        /* Supervisor Badge */
+        .supervisor-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            color: white;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .supervisor-badge i {
+            color: var(--spotify-green);
+            margin-right: 8px;
+        }
+
+        /* Team Grid */
+        .team-container {
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 50px;
+            padding: 0 20px;
+        }
+
+        .team-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .team-member {
+            background: var(--spotify-light-grey);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: left;
+            border-left: 3px solid transparent;
+            transition: 0.3s;
+        }
+
+        .team-member:hover {
+            background: #333;
+            border-left: 3px solid var(--spotify-green);
+            transform: translateY(-3px);
+        }
+
+        .tm-name {
+            font-weight: 700;
+            color: white;
+            display: block;
+            font-size: 15px;
+        }
+
+        .tm-major {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Meta Grid */
+        .project-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+
+        .meta-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px 10px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .meta-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .meta-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--spotify-green);
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* --- Content Sections --- */
+        .content {
+            padding: 60px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        section {
+            margin-bottom: 80px;
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--spotify-green);
+            margin-top: 10px;
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: white;
+            margin: 40px 0 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h4 {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin: 20px 0 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        p, li {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        .highlight-text {
+            color: var(--spotify-green);
+            font-weight: 700;
+        }
+
+        /* --- Cards & Boxes --- */
+        .feature-box {
+            background: linear-gradient(135deg, var(--spotify-light-grey) 0%, var(--spotify-dark-grey) 100%);
+            border-left: 4px solid var(--spotify-green);
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .feature-box:hover {
+            transform: translateX(10px);
+        }
+
+        /* --- Data Cards Grid --- */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .data-card {
+            background: var(--spotify-dark-grey);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        .data-card i {
+            color: var(--spotify-green);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 40px 0;
+            background: var(--spotify-dark-grey);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #2a2a2a;
+            color: white;
+        }
+
+        /* --- Pros & Cons --- */
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .pc-card {
+            padding: 30px;
+            border-radius: 12px;
+            background: var(--spotify-dark-grey);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .pros { border-top: 4px solid #1DB954; }
+        .cons { border-top: 4px solid #E91429; }
+
+        .pc-card h4 {
+            color: white;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pc-card ul {
+            list-style: none;
+            margin: 0;
+        }
+
+        .pc-card li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+        }
+
+        .pros li::before {
+            content: '✓';
+            color: #1DB954;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .cons li::before {
+            content: '×';
+            color: #E91429;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 22px;
+        }
+
+        /* --- Research Grid --- */
+        .research-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: black;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 60px 20px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            border-top: 1px solid #333;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .cover-page h1 { font-size: 42px; }
+            .project-meta { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+            .content { padding: 40px 20px; }
+            .institution-header { font-size: 10px; top: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cover-page">
+            
+            <div class="institution-header">
+                <strong>SADAT ACADEMY FOR MANAGEMENT SCIENCES</strong>
+                <span>FACULTY OF COMPUTER AND INFORMATION</span>
+            </div>
+
+            <div class="logo-container">
+                <i class="fab fa-spotify"></i>
+            </div>
+            <h1>CHURN PREDICTION</h1>
+            <p class="subtitle">Machine Learning Classification Project</p>
+            
+            <a href="https://drive.google.com/file/d/1X1lKwZz_VakIZXIKZacPTwoUelL_9wBo/view?usp=sharing" class="cta-button" target="_blank">
+                <i class="fas fa-file-pdf"></i> View Full Proposal PDF
+            </a>
+
+            <div class="supervisor-badge">
+                <i class="fas fa-chalkboard-teacher"></i> Supervised by: <strong>Assoc. Prof. Dalia A. Magdi</strong>
+            </div>
+            
+            <div class="team-container">
+                <div class="team-title">Project Team</div>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <span class="tm-name">Lujain Mohamed</span>
+                        <span class="tm-major">Data Science / DS2</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="tm-name">Hana Reda</span>
+                        <span class="tm-major">Data Science / DS2</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="tm-name">Ahmed Abdelaazem</span>
+                        <span class="tm-major">Data Science / DS2</span>
+                    </div>
+                    <div class="team-member">
+                        <span class="tm-name">Elham Mohamed</span>
+                        <span class="tm-major">Data Science / DS2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Algorithm</div>
+                    <div class="meta-value">XGBoost</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Baseline</div>
+                    <div class="meta-value">Random Forest</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Metric</div>
+                    <div class="meta-value">Recall/Precision</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Target</div>
+                    <div class="meta-value">User Retention</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <section>
+                <h2>1. Feature Analysis</h2>
+                <p>We are utilizing the <strong>Spotify User Activity Logs</strong> to track behavior patterns over a 6-month period.</p>
+                
+                <div class="data-grid">
+                    <div class="data-card">
+                        <i class="fas fa-users"></i>
+                        <h4>Demographics</h4>
+                        <p>Age, Gender, Country. Used to identify regional or generational attrition trends.</p>
+                    </div>
+                    <div class="data-card">
+                        <i class="fas fa-credit-card"></i>
+                        <h4>Subscription</h4>
+                        <p>Free vs. Premium (Family/Duo). Critical for assessing tier-specific stickiness.</p>
+                    </div>
+                    <div class="data-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Engagement</h4>
+                        <p>Listening Time, Songs Per Day. Sharp declines here often precede churn.</p>
+                    </div>
+                    <div class="data-card">
+                        <i class="fas fa-thumbs-down"></i>
+                        <h4>Friction</h4>
+                        <p>Skip Rate & Ad Tolerance. High skips indicate low content relevance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>2. Project Objective</h2>
+                <div class="feature-box">
+                    <h3 style="margin-top:0"><i class="fas fa-bullseye" style="color:var(--spotify-green); margin-right:10px;"></i> The Goal</h3>
+                    <p>To predict <span class="highlight-text">Customer Churn</span> (User Attrition). Acquiring a new listener is <strong>5x more expensive</strong> than retaining an existing one. Our model will identify "at-risk" users for proactive intervention (e.g., targeted playlists or offers).</p>
+                    <p style="margin-bottom:0; font-size:14px; opacity:0.8; border-top:1px solid #444; padding-top:15px; margin-top:15px;">
+                        <strong>Optimization Strategy:</strong> Maximize <em>Recall</em> to capture potential churners while balancing <em>Precision</em> to manage retention budget.
+                    </p>
+                </div>
+            </section>
+
+            <section>
+                <h2>3. Proposed Algorithms</h2>
+                <p>We propose an <strong>Ensemble Learning</strong> approach, pitting a robust bagging method against a state-of-the-art boosting method.</p>
+
+                <h3>Primary: XGBoost</h3>
+                <p>Extreme Gradient Boosting builds trees sequentially, where each new tree corrects the errors of the previous ones.</p>
+                
+                <div class="pros-cons">
+                    <div class="pc-card pros">
+                        <h4><i class="fas fa-check-circle"></i> Strengths</h4>
+                        <ul>
+                            <li><strong>High Accuracy:</strong> Uses gradient descent to minimize errors.</li>
+                            <li><strong>Class Imbalance:</strong> <code>scale_pos_weight</code> handles rare churn events well.</li>
+                            <li><strong>Pruning:</strong> Built-in regularization prevents overfitting.</li>
+                        </ul>
+                    </div>
+                    <div class="pc-card cons">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Weaknesses</h4>
+                        <ul>
+                            <li>Complex hyperparameter tuning (Learning rate, depth).</li>
+                            <li>Can overfit if the dataset is too small/noisy.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Baseline: Random Forest</h3>
+                <p>A bagging technique that builds multiple independent decision trees in parallel and averages their results.</p>
+
+                <div class="pros-cons">
+                    <div class="pc-card pros">
+                        <h4><i class="fas fa-shield-alt"></i> Strengths</h4>
+                        <ul>
+                            <li><strong>Robustness:</strong> Handles outliers and noise better than boosting.</li>
+                            <li><strong>Parallelism:</strong> Trees are built simultaneously (faster training).</li>
+                            <li><strong>No Scaling:</strong> Requires less data preprocessing/scaling.</li>
+                        </ul>
+                    </div>
+                    <div class="pc-card cons">
+                        <h4><i class="fas fa-hourglass-half"></i> Weaknesses</h4>
+                        <ul>
+                            <li><strong>Latency:</strong> Slower prediction speed in real-time applications.</li>
+                            <li><strong>Memory:</strong> High memory consumption for large forests.</li>
+                            <li><strong>Black Box:</strong> Less interpretable than single trees.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3><i class="fas fa-balance-scale"></i> Technical Comparison</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Random Forest (Baseline)</th>
+                            <th>XGBoost (Champion)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Ensemble Type</strong></td>
+                            <td>Bagging (Bootstrap Aggregation)</td>
+                            <td>Boosting (Gradient Descent)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Error Reduction</strong></td>
+                            <td>Reduces Variance</td>
+                            <td>Reduces Bias and Variance</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training Speed</strong></td>
+                            <td>Fast (Parallel)</td>
+                            <td>Moderate (Sequential)</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Imbalance Handling</strong></td>
+                            <td>Requires Sampling (SMOTE)</td>
+                            <td>Built-in Weighted Param</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>4. Research Context</h2>
+                <p>A review of recent literature in streaming analytics and telecommunications churn.</p>
+                
+                <div class="research-grid">
+                    <div class="feature-box" style="border-left-color: #1DB954;">
+                        <h4><i class="fas fa-trophy" style="color: #1DB954;"></i> Performance Benchmarks (2025)</h4>
+                        <p>According to <em>"Comparative Analysis of Churn Prediction Models,"</em> XGBoost consistently achieves F1-scores in the <strong>0.82–0.92</strong> range. It outperforms deep neural networks on tabular data because decision trees are better suited for categorical variables (like Subscription Type) and require less data to converge.</p>
+                    </div>
+
+                    <div class="feature-box" style="border-left-color: #535353;">
+                        <h4><i class="fas fa-wave-square" style="color: white;"></i> Behavioral vs. Static Data</h4>
+                        <p>Research by <em>IEEE Access</em> highlights that <strong>behavioral features</strong> (Skip Rate, Session Length) have a 60% higher predictive power than static demographics (Age, Gender). This justifies our heavy focus on the "Engagement" and "Friction" feature sets.</p>
+                    </div>
+
+                    <div class="feature-box" style="border-left-color: #E91429;">
+                        <h4><i class="fas fa-balance-scale-right" style="color: #E91429;"></i> Handling Imbalance</h4>
+                        <p>Academic consensus suggests that for Churn (where only ~10% of users leave), standard accuracy is misleading. Studies recommend using <strong>SMOTE (Synthetic Minority Over-sampling Technique)</strong> for the Random Forest baseline, while utilizing <strong>Weighted Loss Functions</strong> for the XGBoost model to ensure the minority class is not ignored.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Spotify Churn Prediction Project | Algorithmic Foundations of Data Science</p>
+        </footer>
+    </div>
+</body>
+</html>
